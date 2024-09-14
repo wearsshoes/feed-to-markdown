@@ -88,7 +88,7 @@ test('generateMarkdown should replace placeholders correctly', async () => {
 **Published Date:** 2024-05-10T09:21:26+00:00
 **Video:** https://www.youtube.com/v/4BxrfhUwldc?version=3
 **Thumbnail:** ![Thumbnail](https://i1.ytimg.com/vi/4BxrfhUwldc/hqdefault.jpg)
-**Categories:** 
+**Categories:**
 **Views:** 48
 **Rating:** 5.00
 `;

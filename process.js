@@ -23,7 +23,7 @@ const generateMarkdown = (template, entry, feed) => {
   const content = isAtom ? entry.content?.[0]?._ : (entry.description?.[0] || entry['media:group']?.[0]?.['media:description']?.[0] || entry.content?.[0]?.['_'] || '');
   const markdown = content ? new TurndownService({codeBlockStyle: 'fenced', fenced: '```', bulletListMarker: '-'}).turndown(content) : '';
   const description = entry.summary?.[0] || entry['media:group']?.[0]?.['media:description']?.[0] || (content ? content.replace(/(<([^>]+)>)/gi, "").split(" ").splice(0, 50).join(" ") : '') || '';
-  const author = isAtom 
+  const author = isAtom
     ? (feed?.author?.[0]?.name?.[0] || 'Unknown Author')
     : (entry.author?.[0]?.name?.[0] || entry.author?.[0]?.['n']?.[0] || entry['dc:creator']?.[0] || 'Unknown Author');
   const video = entry['media:group']?.[0]?.['media:content']?.[0]?.$?.url || '';
@@ -32,14 +32,11 @@ const generateMarkdown = (template, entry, feed) => {
   const categories = entry.category || [];
   const views = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:statistics']?.[0]?.$.views || '';
   const rating = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:starRating']?.[0]?.$.average || '';
-  const categories = entry.category || [];
-  const views = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:statistics']?.[0]?.$.views || '';
-  const rating = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:starRating']?.[0]?.$.average || '';
 
   const output = template
     .replaceAll('[ID]', id)
-    .replaceAll('[DATE]', date)
     .replaceAll('[LINK]', link)
+    .replaceAll('[DATE]', date)
     .replaceAll('[TITLE]', title.replace(/\s+/g, ' ').trim())
     .replaceAll('[DESCRIPTION]', description.replace(/\s+/g, ' ').trim())
     .replaceAll('[CONTENT]', content || '')
