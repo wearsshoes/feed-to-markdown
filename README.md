@@ -42,10 +42,27 @@ jobs:
 
 ## Template File
 
-1. Create a new Markdown file named template.md.
-2. Customize the template to fit your desired output format. You can use Markdown syntax and add placeholders for dynamic content.
-3. Identify the parts of the template that you want to be replaced with actual values from the RSS feed entries. Placeholders include `[ID]`, `[DATE]`, `[LINK]`, `[TITLE]`, `[DESCRIPTION]`, `[CONTENT]`, `[MARKDOWN]`, `[AUTHOR]`, `[VIDEO]`, `[IMAGE]`, `[IMAGES]`, `[CATEGORIES]`, `[VIEWS]`, `[RATING]`.
-4. Replace the corresponding parts in the template with the desired placeholders. For example:
+The template file is used to define the structure of the generated Markdown files. You can customize it to fit your desired output format. Here's how to create and use a template:
+
+1. Create a new Markdown file named `template.md`.
+2. Use Markdown syntax and add placeholders for dynamic content.
+3. Available placeholders:
+   - `[ID]`: Unique identifier for the entry
+   - `[DATE]`: Publication date
+   - `[LINK]`: URL of the entry
+   - `[TITLE]`: Title of the entry
+   - `[DESCRIPTION]`: Short description or summary
+   - `[CONTENT]`: Full content (HTML)
+   - `[MARKDOWN]`: Full content (converted to Markdown)
+   - `[AUTHOR]`: Author of the entry
+   - `[VIDEO]`: Video URL (if available)
+   - `[IMAGE]`: Main image URL
+   - `[IMAGES]`: Comma-separated list of image URLs
+   - `[CATEGORIES]`: Comma-separated list of categories
+   - `[VIEWS]`: Number of views (if available)
+   - `[RATING]`: Rating (if available)
+
+Example template:
 
 ```markdown
 ---
@@ -54,37 +71,42 @@ link: [LINK]
 title: [TITLE]
 date: [DATE]
 author: [AUTHOR]
-keywords: [CATEGORIES]
+categories: [CATEGORIES]
 image: [IMAGE]
-images: [IMAGES]
 description: >
   [DESCRIPTION]
 ---
 # [TITLE]
-##### [AUTHOR]
-_[DATE]_
+##### By [AUTHOR] on [DATE]
 
 [MARKDOWN]
+![Thumbnail]([IMAGE])
 ```
 
-Make sure to use meaningful placeholders that align with the content you want to display in the generated Markdown files. These placeholders will be replaced with the actual values from the RSS feed entries during the conversion process.
+## Development
 
-Feel free to adjust the template according to your needs, including adding more metadata or formatting options. The template allows you to control the structure and appearance of the generated Markdown files.
+To set up the project for development:
 
-## Compile Project
+1. Clone the repository
+2. Install dependencies:
+   ```
+   yarn install
+   ```
+3. Run tests:
+   ```
+   yarn test
+   ```
 
-To package the project, you'll need to use [vercel/ncc](https://github.com/vercel/ncc) which compiles all source code and dependencies into a single file.
+## Building the Project
 
 ```bash
-npm i -g @vercel/ncc
+yarn build
 ```
 
-```bash
-ncc build index.js -o dist
-```
+This command uses `@vercel/ncc` to compile all source code and dependencies into a single file in the `dist` directory.
 
-## Contribution
+## Contributing
 
-Feel free to customize the workflow and inputs based on your specific use case.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-If you have any questions or need further assistance, please let me know!
+If you have any questions or need further assistance, please open an issue.

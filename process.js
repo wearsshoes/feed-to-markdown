@@ -5,21 +5,17 @@ const { parseStringPromise } = require('xml2js');
 const sanitize = require('sanitize-filename');
 const TurndownService = require('turndown');
 const imageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-
-// Fetch the RSS feed
 async function fetchAndParseFeed(feedUrl) {
   const response = await axios.get(feedUrl);
   const feedXml = response.data;
   return parseStringPromise(feedXml);
 }
-
-// Process the feed entries and generate Markdown files
 const generateMarkdown = (template, entry, feed) => {
   const isAtom = !!entry.id;
   const id = isAtom ? entry.id[0] : (entry['yt:videoId']?.[0] || entry['id']?.[0] || entry.guid?.[0]?.['_'] || entry.guid?.[0] || '');
   const date = isAtom ? entry.published?.[0] || entry.updated?.[0] : (entry.published?.[0] || entry.pubDate?.[0] || entry.updated?.[0] || '');
   const link = isAtom ? entry.link?.[0]?.$.href : (entry.link?.[0]?.$?.href || entry.link?.[0] || '');
-  const title = (isAtom ? entry.title?.[0]?._ || entry.title?.[0] : entry.title?.[0])?.replace(/[^\w\s-]/g, '') || '';
+  const title = (isAtom ? entry.title?.[0]?._ || entry.title?.[0] : entry.title?.[0] || entry.title || '')?.toString().replace(/[^\w\s-]/g, '') || '';
   const content = isAtom ? entry.content?.[0]?._ : (entry.description?.[0] || entry['media:group']?.[0]?.['media:description']?.[0] || entry.content?.[0]?.['_'] || '');
   const markdown = content ? new TurndownService({codeBlockStyle: 'fenced', fenced: '```', bulletListMarker: '-'}).turndown(content) : '';
   const description = entry.summary?.[0] || entry['media:group']?.[0]?.['media:description']?.[0] || (content ? content.replace(/(<([^>]+)>)/gi, "").split(" ").splice(0, 50).join(" ") : '') || '';
@@ -34,20 +30,20 @@ const generateMarkdown = (template, entry, feed) => {
   const rating = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:starRating']?.[0]?.$.average || '';
 
   const output = template
-    .replaceAll('[ID]', id)
-    .replaceAll('[LINK]', link)
-    .replaceAll('[DATE]', date)
-    .replaceAll('[TITLE]', title.replace(/\s+/g, ' ').trim())
-    .replaceAll('[DESCRIPTION]', description.replace(/\s+/g, ' ').trim())
-    .replaceAll('[CONTENT]', content || '')
-    .replaceAll('[MARKDOWN]', markdown)
-    .replaceAll('[AUTHOR]', author)
-    .replaceAll('[VIDEO]', video)
-    .replaceAll('[IMAGE]', image)
-    .replaceAll('[IMAGES]', images.join(','))
-    .replaceAll('[CATEGORIES]', categories.join(','))
-    .replaceAll('[VIEWS]', views)
-    .replaceAll('[RATING]', rating);
+    .replace(/\[ID\]/g, id)
+    .replace(/\[LINK\]/g, link)
+    .replace(/\[DATE\]/g, date)
+    .replace(/\[TITLE\]/g, title.replace(/\s+/g, ' ').trim())
+    .replace(/\[DESCRIPTION\]/g, description.replace(/\s+/g, ' ').trim())
+    .replace(/\[CONTENT\]/g, content || '')
+    .replace(/\[MARKDOWN\]/g, markdown)
+    .replace(/\[AUTHOR\]/g, author)
+    .replace(/\[VIDEO\]/g, video)
+    .replace(/\[IMAGE\]/g, image)
+    .replace(/\[IMAGES\]/g, images.join(','))
+    .replace(/\[CATEGORIES\]/g, categories.join(','))
+    .replace(/\[VIEWS\]/g, views)
+    .replace(/\[RATING\]/g, rating);
 
   return { output, date, title };
 }

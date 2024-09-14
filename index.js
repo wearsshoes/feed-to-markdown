@@ -6,7 +6,7 @@ const fs = require('fs');
 async function run() {
   try {
 
-    //node index.js feed_url= template_file= output_dir=test
+    // node index.js feed_url= template_file= output_dir=test
     const feedUrl = core.getInput('feed_url');
     const templateFile = core.getInput('template_file');
     const outputDir = core.getInput('output_dir');
@@ -33,7 +33,7 @@ async function run() {
     // Process the feed entries and generate Markdown files
     entries.forEach((entry) => {
       
-      const { output, date, title } = generateMarkdown(template, entry);
+      const { output, date, title } = generateMarkdown(template, entry, feedData);
       const filePath = saveMarkdown(outputDir, date, title, output);
 
       console.log(`Markdown file '${filePath}' created.`);
