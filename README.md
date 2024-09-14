@@ -1,10 +1,10 @@
 # RSS Feed to Markdown
 
-This GitHub Action converts RSS feed entries to Markdown files. It fetches the RSS feed, extracts relevant information from each entry, and generates Markdown files using a provided template.
+This GitHub Action converts RSS and Atom feed entries to Markdown files. It fetches the feed, extracts relevant information from each entry, and generates Markdown files using a provided template.
 
 ## Input Variables
 
-- `feed_url` (required): The URL of the RSS feed.
+- `feed_url` (required): The URL of the RSS or Atom feed.
 - `template_file` (required): The path to the template file.
 - `output_dir` (required): The directory where the generated Markdown files will be saved.
 
@@ -83,8 +83,27 @@ description: >
 ![Thumbnail]([IMAGE])
 ```
 
+## Supported Feed Formats
+
+This action supports both RSS 2.0 and Atom feed formats. It automatically detects the feed type and processes it accordingly.
+
+### Atom Support
+
+For Atom feeds, the action maps the following elements:
+
+- `entry.id` for the unique identifier
+- `entry.published` or `entry.updated` for the publication date
+- `entry.link.$.href` for the entry URL
+- `entry.title` for the entry title
+- `entry.content` for the full content
+- `entry.summary` for the description
+- `feed.author.name` for the author name
+
+The action handles the differences in structure between RSS and Atom feeds, ensuring consistent output regardless of the input feed format.
+
 ## Development
 
+To set up the project for development:
 To set up the project for development:
 
 1. Clone the repository
