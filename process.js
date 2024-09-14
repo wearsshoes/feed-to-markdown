@@ -37,8 +37,6 @@ const generateMarkdown = (template, entry, feed) => {
   const views = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:statistics']?.[0]?.$.views || '';
   const rating = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:starRating']?.[0]?.$.average || '';
 
-  const rating = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:starRating']?.[0]?.$.average || '';
-
   const safeDescription = (typeof description === 'string') ? description : String(description);
 
   const output = template
