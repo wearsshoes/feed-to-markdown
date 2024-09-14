@@ -4,4 +4,3 @@
 **Author:** [AUTHOR]
 **Published Date:** [DATE]
 **Content:** [CONTENT]
-
