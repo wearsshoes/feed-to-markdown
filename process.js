@@ -25,23 +25,35 @@ const generateMarkdown = (template, entry, feed) => {
   const video = entry['media:group']?.[0]?.['media:content']?.[0]?.$?.url || '';
   const image = entry['media:group']?.[0]?.['media:thumbnail']?.[0]?.$.url || entry['media:thumbnail']?.[0]?.$.url || '';
   const images = (entry['enclosure'] || entry['media:content'])?.filter(e => imageTypes.includes(e.$['type']))?.map(e => e.$.url) || [];
-  const categories = entry.category || [];
+
+  let categories = '';
+  if (Array.isArray(entry.category)) {
+    categories = entry.category.map(cat => cat._ || cat).join(',');
+  } else if (typeof entry.category === 'string') {
+    categories = entry.category;
+  } else if (entry.category && typeof entry.category === 'object') {
+    categories = Object.values(entry.category).join(',');
+  }
   const views = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:statistics']?.[0]?.$.views || '';
   const rating = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:starRating']?.[0]?.$.average || '';
+
+  const rating = entry['media:group']?.[0]?.['media:community']?.[0]?.['media:starRating']?.[0]?.$.average || '';
+
+  const safeDescription = (typeof description === 'string') ? description : String(description);
 
   const output = template
     .replace(/\[ID\]/g, id)
     .replace(/\[LINK\]/g, link)
     .replace(/\[DATE\]/g, date)
     .replace(/\[TITLE\]/g, title.replace(/\s+/g, ' ').trim())
-    .replace(/\[DESCRIPTION\]/g, description.replace(/\s+/g, ' ').trim())
+    .replace(/\[DESCRIPTION\]/g, safeDescription.replace(/\s+/g, ' ').trim())
     .replace(/\[CONTENT\]/g, content || '')
     .replace(/\[MARKDOWN\]/g, markdown)
     .replace(/\[AUTHOR\]/g, author)
     .replace(/\[VIDEO\]/g, video)
     .replace(/\[IMAGE\]/g, image)
     .replace(/\[IMAGES\]/g, images.join(','))
-    .replace(/\[CATEGORIES\]/g, categories.join(','))
+    .replace(/\[CATEGORIES\]/g, categories)
     .replace(/\[VIEWS\]/g, views)
     .replace(/\[RATING\]/g, rating);
 

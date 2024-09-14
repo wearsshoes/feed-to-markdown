@@ -5,16 +5,28 @@ const fs = require('fs');
 
 async function run() {
   try {
+    let feedUrl, templateFile, outputDir;
 
-    // node index.js feed_url= template_file= output_dir=test
-    const feedUrl = core.getInput('feed_url');
-    const templateFile = core.getInput('template_file');
-    const outputDir = core.getInput('output_dir');
-
-    // Validate input values
+    if (process.env.GITHUB_ACTIONS) {
+      // Running in GitHub Actions
+      feedUrl = core.getInput('feed_url');
+      templateFile = core.getInput('template_file');
+      outputDir = core.getInput('output_dir');
+    } else {
+      // Running locally
+      feedUrl = process.argv[2];
+      templateFile = process.argv[3];
+      outputDir = process.argv[4];
+    }
     if (!fs.existsSync(templateFile)) {
-      core.setFailed(`Template file '${templateFile}' does not exist.`);
-      return;
+      throw new Error(`Template file '${templateFile}' does not exist.`);
+    }
+
+    if (!feedUrl || !templateFile || !outputDir) {
+      throw new Error('Missing required inputs: feed_url, template_file, or output_dir');
+    }
+    if (!fs.existsSync(templateFile)) {
+      throw new Error(`Template file '${templateFile}' does not exist.`);
     }
 
     if (!fs.existsSync(outputDir)) {
@@ -24,7 +36,7 @@ async function run() {
 
     // Read the template file
     const template = fs.readFileSync(templateFile, 'utf8');
-    
+
     // Fetch and parse the RSS feed
     const feedData = await fetchAndParseFeed(feedUrl);
 
@@ -32,15 +44,20 @@ async function run() {
 
     // Process the feed entries and generate Markdown files
     entries.forEach((entry) => {
-      
+
       const { output, date, title } = generateMarkdown(template, entry, feedData);
       const filePath = saveMarkdown(outputDir, date, title, output);
 
       console.log(`Markdown file '${filePath}' created.`);
     });
-  } 
+  }
   catch (error) {
-    core.setFailed(error.message);
+    if (process.env.GITHUB_ACTIONS) {
+      core.setFailed(error.message);
+    } else {
+      console.error(error.message);
+      process.exit(1);
+    }
   }
 }
 
